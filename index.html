@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      section {
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .circle {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 350px;
+        height: 200px;
+        border-radius: 15px;
+        cursor: pointer;
+        background-color: rgb(22, 22, 22);
+        color: white;
+        text-align: center;
+        padding-top: 10px;
+        font-size: 20px;
+        user-select: none;
+        touch-action: none;
+      }
+
+      .text {
+        position: relative;
+        font-size: 50px;
+        color: white;
+        user-select: none;
+      }
+      audio {
+        position: absolute;
+        bottom: 0;
+        right: 50;
+        margin-bottom: 10px;
+      }
+
+      .fade {
+        opacity: 0;
+      }
+
+      .text:hover > .fade {
+        opacity: 1;
+      }
+    </style>
+    <title>Buat Kamu</title>
+  </head>
+  <body>
+    <section>
+      <div class="circle draggable">Pindahin aku ketengah dong 🙏</div>
+
+      <audio controls autoplay loop>
+        <source src="weak.mp3" type="audio/mpeg" />
+      </audio>
+
+      <iframe
+        src="weak.mp3"
+        allow="autoplay"
+        style="display: none"
+        id="iframeAudio"
+        class="draggable"
+      >
+      </iframe>
+
+      <p class="text">
+        I Love You</span>
+      </p>
+    </section>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+<script>
+    // target elements with the "draggable" class
+interact(".draggable").draggable({
+  // enable inertial throwing
+  inertia: true,
+  // keep the element within the area of it's parent
+  modifiers: [
+    interact.modifiers.restrictRect({
+      restriction: "parent",
+      endOnly: true,
+    }),
+  ],
+  // enable autoScroll
+  autoScroll: true,
+
+  listeners: {
+    // call this function on every dragmove event
+    move: dragMoveListener,
+
+    // call this function on every dragend event
+    end(event) {
+      var textEl = event.target.querySelector("p");
+
+      textEl &&
+        (textEl.textContent =
+          "moved a distance of " +
+          Math.sqrt(
+            (Math.pow(event.pageX - event.x0, 2) +
+              Math.pow(event.pageY - event.y0, 2)) |
+              0
+          ).toFixed(2) +
+          "px");
+    },
+  },
+});
+
+function dragMoveListener(event) {
+  var target = event.target;
+  // keep the dragged position in the data-x/data-y attributes
+  var x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx;
+  var y = (parseFloat(target.getAttribute("data-y")) || 0) + event.dy;
+
+  // translate the element
+  target.style.transform = "translate(" + x + "px, " + y + "px)";
+
+  // update the posiion attributes
+  target.setAttribute("data-x", x);
+  target.setAttribute("data-y", y);
+}
+
+// this function is used later in the resizing and gesture demos
+window.dragMoveListener = dragMoveListener;
+</script>
+  </body>
+</html>
